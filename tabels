@@ -1,0 +1,1328 @@
+[
+  {
+    "Tables_in_glpi": "glpi_agents"
+  },
+  {
+    "Tables_in_glpi": "glpi_agenttypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_alerts"
+  },
+  {
+    "Tables_in_glpi": "glpi_apiclients"
+  },
+  {
+    "Tables_in_glpi": "glpi_applianceenvironments"
+  },
+  {
+    "Tables_in_glpi": "glpi_appliances"
+  },
+  {
+    "Tables_in_glpi": "glpi_appliances_items"
+  },
+  {
+    "Tables_in_glpi": "glpi_appliances_items_relations"
+  },
+  {
+    "Tables_in_glpi": "glpi_appliancetypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_assets_assetdefinitions"
+  },
+  {
+    "Tables_in_glpi": "glpi_assets_assetmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_assets_assets"
+  },
+  {
+    "Tables_in_glpi": "glpi_assets_assets_peripheralassets"
+  },
+  {
+    "Tables_in_glpi": "glpi_assets_assettypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_assets_customfielddefinitions"
+  },
+  {
+    "Tables_in_glpi": "glpi_authldapreplicates"
+  },
+  {
+    "Tables_in_glpi": "glpi_authldaps"
+  },
+  {
+    "Tables_in_glpi": "glpi_authmails"
+  },
+  {
+    "Tables_in_glpi": "glpi_autoupdatesystems"
+  },
+  {
+    "Tables_in_glpi": "glpi_blacklistedmailcontents"
+  },
+  {
+    "Tables_in_glpi": "glpi_blacklists"
+  },
+  {
+    "Tables_in_glpi": "glpi_budgets"
+  },
+  {
+    "Tables_in_glpi": "glpi_budgettypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_businesscriticities"
+  },
+  {
+    "Tables_in_glpi": "glpi_cables"
+  },
+  {
+    "Tables_in_glpi": "glpi_cablestrands"
+  },
+  {
+    "Tables_in_glpi": "glpi_cabletypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_calendars"
+  },
+  {
+    "Tables_in_glpi": "glpi_calendars_holidays"
+  },
+  {
+    "Tables_in_glpi": "glpi_calendarsegments"
+  },
+  {
+    "Tables_in_glpi": "glpi_cartridgeitems"
+  },
+  {
+    "Tables_in_glpi": "glpi_cartridgeitems_printermodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_cartridgeitemtypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_cartridges"
+  },
+  {
+    "Tables_in_glpi": "glpi_certificates"
+  },
+  {
+    "Tables_in_glpi": "glpi_certificates_items"
+  },
+  {
+    "Tables_in_glpi": "glpi_certificatetypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_changecosts"
+  },
+  {
+    "Tables_in_glpi": "glpi_changes"
+  },
+  {
+    "Tables_in_glpi": "glpi_changes_changes"
+  },
+  {
+    "Tables_in_glpi": "glpi_changes_groups"
+  },
+  {
+    "Tables_in_glpi": "glpi_changes_items"
+  },
+  {
+    "Tables_in_glpi": "glpi_changes_problems"
+  },
+  {
+    "Tables_in_glpi": "glpi_changes_suppliers"
+  },
+  {
+    "Tables_in_glpi": "glpi_changes_tickets"
+  },
+  {
+    "Tables_in_glpi": "glpi_changes_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_changesatisfactions"
+  },
+  {
+    "Tables_in_glpi": "glpi_changetasks"
+  },
+  {
+    "Tables_in_glpi": "glpi_changetemplatehiddenfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_changetemplatemandatoryfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_changetemplatepredefinedfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_changetemplatereadonlyfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_changetemplates"
+  },
+  {
+    "Tables_in_glpi": "glpi_changevalidations"
+  },
+  {
+    "Tables_in_glpi": "glpi_clusters"
+  },
+  {
+    "Tables_in_glpi": "glpi_clustertypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_computermodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_computers"
+  },
+  {
+    "Tables_in_glpi": "glpi_computertypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_configs"
+  },
+  {
+    "Tables_in_glpi": "glpi_consumableitems"
+  },
+  {
+    "Tables_in_glpi": "glpi_consumableitemtypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_consumables"
+  },
+  {
+    "Tables_in_glpi": "glpi_contacts"
+  },
+  {
+    "Tables_in_glpi": "glpi_contacts_suppliers"
+  },
+  {
+    "Tables_in_glpi": "glpi_contacttypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_contractcosts"
+  },
+  {
+    "Tables_in_glpi": "glpi_contracts"
+  },
+  {
+    "Tables_in_glpi": "glpi_contracts_items"
+  },
+  {
+    "Tables_in_glpi": "glpi_contracts_suppliers"
+  },
+  {
+    "Tables_in_glpi": "glpi_contracts_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_contracttypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_crontasklogs"
+  },
+  {
+    "Tables_in_glpi": "glpi_crontasks"
+  },
+  {
+    "Tables_in_glpi": "glpi_dashboards_dashboards"
+  },
+  {
+    "Tables_in_glpi": "glpi_dashboards_filters"
+  },
+  {
+    "Tables_in_glpi": "glpi_dashboards_items"
+  },
+  {
+    "Tables_in_glpi": "glpi_dashboards_rights"
+  },
+  {
+    "Tables_in_glpi": "glpi_databaseinstancecategories"
+  },
+  {
+    "Tables_in_glpi": "glpi_databaseinstances"
+  },
+  {
+    "Tables_in_glpi": "glpi_databaseinstancetypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_databases"
+  },
+  {
+    "Tables_in_glpi": "glpi_datacenters"
+  },
+  {
+    "Tables_in_glpi": "glpi_dcrooms"
+  },
+  {
+    "Tables_in_glpi": "glpi_defaultfilters"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicebatteries"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicebatterymodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicebatterytypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicecameramodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicecameras"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicecasemodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicecases"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicecasetypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicecontrolmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicecontrols"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicedrivemodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicedrives"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicefirmwaremodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicefirmwares"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicefirmwaretypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicegenericmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicegenerics"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicegenerictypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicegraphiccardmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicegraphiccards"
+  },
+  {
+    "Tables_in_glpi": "glpi_deviceharddrivemodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_deviceharddrives"
+  },
+  {
+    "Tables_in_glpi": "glpi_deviceharddrivetypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicememories"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicememorymodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicememorytypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicemotherboardmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicemotherboards"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicenetworkcardmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicenetworkcards"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicepcimodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicepcis"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicepowersupplies"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicepowersupplymodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_deviceprocessormodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_deviceprocessors"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicesensormodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicesensors"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicesensortypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicesimcards"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicesimcardtypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicesoundcardmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_devicesoundcards"
+  },
+  {
+    "Tables_in_glpi": "glpi_displaypreferences"
+  },
+  {
+    "Tables_in_glpi": "glpi_documentcategories"
+  },
+  {
+    "Tables_in_glpi": "glpi_documents"
+  },
+  {
+    "Tables_in_glpi": "glpi_documents_items"
+  },
+  {
+    "Tables_in_glpi": "glpi_documenttypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_domainrecords"
+  },
+  {
+    "Tables_in_glpi": "glpi_domainrecordtypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_domainrelations"
+  },
+  {
+    "Tables_in_glpi": "glpi_domains"
+  },
+  {
+    "Tables_in_glpi": "glpi_domains_items"
+  },
+  {
+    "Tables_in_glpi": "glpi_domaintypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_dropdowns_dropdowndefinitions"
+  },
+  {
+    "Tables_in_glpi": "glpi_dropdowns_dropdowns"
+  },
+  {
+    "Tables_in_glpi": "glpi_dropdowntranslations"
+  },
+  {
+    "Tables_in_glpi": "glpi_dropdownvisibilities"
+  },
+  {
+    "Tables_in_glpi": "glpi_enclosuremodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_enclosures"
+  },
+  {
+    "Tables_in_glpi": "glpi_entities"
+  },
+  {
+    "Tables_in_glpi": "glpi_entities_knowbaseitems"
+  },
+  {
+    "Tables_in_glpi": "glpi_entities_reminders"
+  },
+  {
+    "Tables_in_glpi": "glpi_entities_rssfeeds"
+  },
+  {
+    "Tables_in_glpi": "glpi_events"
+  },
+  {
+    "Tables_in_glpi": "glpi_fieldblacklists"
+  },
+  {
+    "Tables_in_glpi": "glpi_fieldunicities"
+  },
+  {
+    "Tables_in_glpi": "glpi_filesystems"
+  },
+  {
+    "Tables_in_glpi": "glpi_forms_accesscontrols_formaccesscontrols"
+  },
+  {
+    "Tables_in_glpi": "glpi_forms_answerssets"
+  },
+  {
+    "Tables_in_glpi": "glpi_forms_categories"
+  },
+  {
+    "Tables_in_glpi": "glpi_forms_comments"
+  },
+  {
+    "Tables_in_glpi": "glpi_forms_destinations_answerssets_formdestinationitems"
+  },
+  {
+    "Tables_in_glpi": "glpi_forms_destinations_formdestinations"
+  },
+  {
+    "Tables_in_glpi": "glpi_forms_forms"
+  },
+  {
+    "Tables_in_glpi": "glpi_forms_questions"
+  },
+  {
+    "Tables_in_glpi": "glpi_forms_sections"
+  },
+  {
+    "Tables_in_glpi": "glpi_fqdns"
+  },
+  {
+    "Tables_in_glpi": "glpi_groups"
+  },
+  {
+    "Tables_in_glpi": "glpi_groups_items"
+  },
+  {
+    "Tables_in_glpi": "glpi_groups_knowbaseitems"
+  },
+  {
+    "Tables_in_glpi": "glpi_groups_problems"
+  },
+  {
+    "Tables_in_glpi": "glpi_groups_reminders"
+  },
+  {
+    "Tables_in_glpi": "glpi_groups_rssfeeds"
+  },
+  {
+    "Tables_in_glpi": "glpi_groups_tickets"
+  },
+  {
+    "Tables_in_glpi": "glpi_groups_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_helpdesks_tiles_externalpagetiles"
+  },
+  {
+    "Tables_in_glpi": "glpi_helpdesks_tiles_formtiles"
+  },
+  {
+    "Tables_in_glpi": "glpi_helpdesks_tiles_glpipagetiles"
+  },
+  {
+    "Tables_in_glpi": "glpi_helpdesks_tiles_items_tiles"
+  },
+  {
+    "Tables_in_glpi": "glpi_holidays"
+  },
+  {
+    "Tables_in_glpi": "glpi_imageformats"
+  },
+  {
+    "Tables_in_glpi": "glpi_imageresolutions"
+  },
+  {
+    "Tables_in_glpi": "glpi_impactcompounds"
+  },
+  {
+    "Tables_in_glpi": "glpi_impactcontexts"
+  },
+  {
+    "Tables_in_glpi": "glpi_impactitems"
+  },
+  {
+    "Tables_in_glpi": "glpi_impactrelations"
+  },
+  {
+    "Tables_in_glpi": "glpi_infocoms"
+  },
+  {
+    "Tables_in_glpi": "glpi_interfacetypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_ipaddresses"
+  },
+  {
+    "Tables_in_glpi": "glpi_ipaddresses_ipnetworks"
+  },
+  {
+    "Tables_in_glpi": "glpi_ipnetworks"
+  },
+  {
+    "Tables_in_glpi": "glpi_ipnetworks_vlans"
+  },
+  {
+    "Tables_in_glpi": "glpi_itemantiviruses"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_clusters"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicebatteries"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicecameras"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicecameras_imageformats"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicecameras_imageresolutions"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicecases"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicecontrols"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicedrives"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicefirmwares"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicegenerics"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicegraphiccards"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_deviceharddrives"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicememories"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicemotherboards"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicenetworkcards"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicepcis"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicepowersupplies"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_deviceprocessors"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicesensors"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicesimcards"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_devicesoundcards"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_disks"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_enclosures"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_environments"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_kanbans"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_lines"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_operatingsystems"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_plugs"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_problems"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_processes"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_projects"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_racks"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_remotemanagements"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_softwarelicenses"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_softwareversions"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_ticketrecurrents"
+  },
+  {
+    "Tables_in_glpi": "glpi_items_tickets"
+  },
+  {
+    "Tables_in_glpi": "glpi_itemtranslations_itemtranslations"
+  },
+  {
+    "Tables_in_glpi": "glpi_itemvirtualmachines"
+  },
+  {
+    "Tables_in_glpi": "glpi_itilcategories"
+  },
+  {
+    "Tables_in_glpi": "glpi_itilfollowups"
+  },
+  {
+    "Tables_in_glpi": "glpi_itilfollowuptemplates"
+  },
+  {
+    "Tables_in_glpi": "glpi_itilreminders"
+  },
+  {
+    "Tables_in_glpi": "glpi_itils_projects"
+  },
+  {
+    "Tables_in_glpi": "glpi_itils_validationsteps"
+  },
+  {
+    "Tables_in_glpi": "glpi_itilsolutions"
+  },
+  {
+    "Tables_in_glpi": "glpi_itilvalidationtemplates"
+  },
+  {
+    "Tables_in_glpi": "glpi_itilvalidationtemplates_targets"
+  },
+  {
+    "Tables_in_glpi": "glpi_knowbaseitemcategories"
+  },
+  {
+    "Tables_in_glpi": "glpi_knowbaseitems"
+  },
+  {
+    "Tables_in_glpi": "glpi_knowbaseitems_comments"
+  },
+  {
+    "Tables_in_glpi": "glpi_knowbaseitems_items"
+  },
+  {
+    "Tables_in_glpi": "glpi_knowbaseitems_knowbaseitemcategories"
+  },
+  {
+    "Tables_in_glpi": "glpi_knowbaseitems_profiles"
+  },
+  {
+    "Tables_in_glpi": "glpi_knowbaseitems_revisions"
+  },
+  {
+    "Tables_in_glpi": "glpi_knowbaseitems_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_knowbaseitemtranslations"
+  },
+  {
+    "Tables_in_glpi": "glpi_lineoperators"
+  },
+  {
+    "Tables_in_glpi": "glpi_lines"
+  },
+  {
+    "Tables_in_glpi": "glpi_linetypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_links"
+  },
+  {
+    "Tables_in_glpi": "glpi_links_itemtypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_locations"
+  },
+  {
+    "Tables_in_glpi": "glpi_lockedfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_logs"
+  },
+  {
+    "Tables_in_glpi": "glpi_mailcollectors"
+  },
+  {
+    "Tables_in_glpi": "glpi_manuallinks"
+  },
+  {
+    "Tables_in_glpi": "glpi_manufacturers"
+  },
+  {
+    "Tables_in_glpi": "glpi_monitormodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_monitors"
+  },
+  {
+    "Tables_in_glpi": "glpi_monitortypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkaliases"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkequipmentmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkequipments"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkequipmenttypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkinterfaces"
+  },
+  {
+    "Tables_in_glpi": "glpi_networknames"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkportaggregates"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkportaliases"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkportconnectionlogs"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkportdialups"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkportethernets"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkportfiberchannels"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkportfiberchanneltypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkportlocals"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkportmetrics"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkports"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkports_networkports"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkports_vlans"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkporttypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_networkportwifis"
+  },
+  {
+    "Tables_in_glpi": "glpi_networks"
+  },
+  {
+    "Tables_in_glpi": "glpi_notepads"
+  },
+  {
+    "Tables_in_glpi": "glpi_notifications"
+  },
+  {
+    "Tables_in_glpi": "glpi_notifications_notificationtemplates"
+  },
+  {
+    "Tables_in_glpi": "glpi_notificationtargets"
+  },
+  {
+    "Tables_in_glpi": "glpi_notificationtemplates"
+  },
+  {
+    "Tables_in_glpi": "glpi_notificationtemplatetranslations"
+  },
+  {
+    "Tables_in_glpi": "glpi_notimportedemails"
+  },
+  {
+    "Tables_in_glpi": "glpi_oauth_access_tokens"
+  },
+  {
+    "Tables_in_glpi": "glpi_oauth_auth_codes"
+  },
+  {
+    "Tables_in_glpi": "glpi_oauth_refresh_tokens"
+  },
+  {
+    "Tables_in_glpi": "glpi_oauthclients"
+  },
+  {
+    "Tables_in_glpi": "glpi_objectlocks"
+  },
+  {
+    "Tables_in_glpi": "glpi_olalevelactions"
+  },
+  {
+    "Tables_in_glpi": "glpi_olalevelcriterias"
+  },
+  {
+    "Tables_in_glpi": "glpi_olalevels"
+  },
+  {
+    "Tables_in_glpi": "glpi_olalevels_tickets"
+  },
+  {
+    "Tables_in_glpi": "glpi_olas"
+  },
+  {
+    "Tables_in_glpi": "glpi_operatingsystemarchitectures"
+  },
+  {
+    "Tables_in_glpi": "glpi_operatingsystemeditions"
+  },
+  {
+    "Tables_in_glpi": "glpi_operatingsystemkernels"
+  },
+  {
+    "Tables_in_glpi": "glpi_operatingsystemkernelversions"
+  },
+  {
+    "Tables_in_glpi": "glpi_operatingsystems"
+  },
+  {
+    "Tables_in_glpi": "glpi_operatingsystemservicepacks"
+  },
+  {
+    "Tables_in_glpi": "glpi_operatingsystemversions"
+  },
+  {
+    "Tables_in_glpi": "glpi_passivedcequipmentmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_passivedcequipments"
+  },
+  {
+    "Tables_in_glpi": "glpi_passivedcequipmenttypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_pcivendors"
+  },
+  {
+    "Tables_in_glpi": "glpi_pdumodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_pdus"
+  },
+  {
+    "Tables_in_glpi": "glpi_pdus_racks"
+  },
+  {
+    "Tables_in_glpi": "glpi_pdutypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_pendingreasons"
+  },
+  {
+    "Tables_in_glpi": "glpi_pendingreasons_items"
+  },
+  {
+    "Tables_in_glpi": "glpi_peripheralmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_peripherals"
+  },
+  {
+    "Tables_in_glpi": "glpi_peripheraltypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_phonemodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_phonepowersupplies"
+  },
+  {
+    "Tables_in_glpi": "glpi_phones"
+  },
+  {
+    "Tables_in_glpi": "glpi_phonetypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_planningeventcategories"
+  },
+  {
+    "Tables_in_glpi": "glpi_planningexternalevents"
+  },
+  {
+    "Tables_in_glpi": "glpi_planningexternaleventtemplates"
+  },
+  {
+    "Tables_in_glpi": "glpi_planningrecalls"
+  },
+  {
+    "Tables_in_glpi": "glpi_plugins"
+  },
+  {
+    "Tables_in_glpi": "glpi_plugs"
+  },
+  {
+    "Tables_in_glpi": "glpi_printerlogs"
+  },
+  {
+    "Tables_in_glpi": "glpi_printermodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_printers"
+  },
+  {
+    "Tables_in_glpi": "glpi_printers_cartridgeinfos"
+  },
+  {
+    "Tables_in_glpi": "glpi_printertypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_problemcosts"
+  },
+  {
+    "Tables_in_glpi": "glpi_problems"
+  },
+  {
+    "Tables_in_glpi": "glpi_problems_problems"
+  },
+  {
+    "Tables_in_glpi": "glpi_problems_suppliers"
+  },
+  {
+    "Tables_in_glpi": "glpi_problems_tickets"
+  },
+  {
+    "Tables_in_glpi": "glpi_problems_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_problemtasks"
+  },
+  {
+    "Tables_in_glpi": "glpi_problemtemplatehiddenfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_problemtemplatemandatoryfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_problemtemplatepredefinedfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_problemtemplatereadonlyfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_problemtemplates"
+  },
+  {
+    "Tables_in_glpi": "glpi_profilerights"
+  },
+  {
+    "Tables_in_glpi": "glpi_profiles"
+  },
+  {
+    "Tables_in_glpi": "glpi_profiles_reminders"
+  },
+  {
+    "Tables_in_glpi": "glpi_profiles_rssfeeds"
+  },
+  {
+    "Tables_in_glpi": "glpi_profiles_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_projectcosts"
+  },
+  {
+    "Tables_in_glpi": "glpi_projects"
+  },
+  {
+    "Tables_in_glpi": "glpi_projectstates"
+  },
+  {
+    "Tables_in_glpi": "glpi_projecttasklinks"
+  },
+  {
+    "Tables_in_glpi": "glpi_projecttasks"
+  },
+  {
+    "Tables_in_glpi": "glpi_projecttasks_tickets"
+  },
+  {
+    "Tables_in_glpi": "glpi_projecttaskteams"
+  },
+  {
+    "Tables_in_glpi": "glpi_projecttasktemplates"
+  },
+  {
+    "Tables_in_glpi": "glpi_projecttasktypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_projectteams"
+  },
+  {
+    "Tables_in_glpi": "glpi_projecttypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_queuednotifications"
+  },
+  {
+    "Tables_in_glpi": "glpi_queuedwebhooks"
+  },
+  {
+    "Tables_in_glpi": "glpi_rackmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_racks"
+  },
+  {
+    "Tables_in_glpi": "glpi_racktypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_recurrentchanges"
+  },
+  {
+    "Tables_in_glpi": "glpi_refusedequipments"
+  },
+  {
+    "Tables_in_glpi": "glpi_registeredids"
+  },
+  {
+    "Tables_in_glpi": "glpi_reminders"
+  },
+  {
+    "Tables_in_glpi": "glpi_reminders_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_remindertranslations"
+  },
+  {
+    "Tables_in_glpi": "glpi_requesttypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_reservationitems"
+  },
+  {
+    "Tables_in_glpi": "glpi_reservations"
+  },
+  {
+    "Tables_in_glpi": "glpi_rssfeeds"
+  },
+  {
+    "Tables_in_glpi": "glpi_rssfeeds_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_ruleactions"
+  },
+  {
+    "Tables_in_glpi": "glpi_rulecriterias"
+  },
+  {
+    "Tables_in_glpi": "glpi_rulematchedlogs"
+  },
+  {
+    "Tables_in_glpi": "glpi_rulerightparameters"
+  },
+  {
+    "Tables_in_glpi": "glpi_rules"
+  },
+  {
+    "Tables_in_glpi": "glpi_savedsearches"
+  },
+  {
+    "Tables_in_glpi": "glpi_savedsearches_alerts"
+  },
+  {
+    "Tables_in_glpi": "glpi_savedsearches_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_searches_criteriafilters"
+  },
+  {
+    "Tables_in_glpi": "glpi_slalevelactions"
+  },
+  {
+    "Tables_in_glpi": "glpi_slalevelcriterias"
+  },
+  {
+    "Tables_in_glpi": "glpi_slalevels"
+  },
+  {
+    "Tables_in_glpi": "glpi_slalevels_tickets"
+  },
+  {
+    "Tables_in_glpi": "glpi_slas"
+  },
+  {
+    "Tables_in_glpi": "glpi_slms"
+  },
+  {
+    "Tables_in_glpi": "glpi_snmpcredentials"
+  },
+  {
+    "Tables_in_glpi": "glpi_socketmodels"
+  },
+  {
+    "Tables_in_glpi": "glpi_sockets"
+  },
+  {
+    "Tables_in_glpi": "glpi_softwarecategories"
+  },
+  {
+    "Tables_in_glpi": "glpi_softwarelicenses"
+  },
+  {
+    "Tables_in_glpi": "glpi_softwarelicenses_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_softwarelicensetypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_softwares"
+  },
+  {
+    "Tables_in_glpi": "glpi_softwareversions"
+  },
+  {
+    "Tables_in_glpi": "glpi_solutiontemplates"
+  },
+  {
+    "Tables_in_glpi": "glpi_solutiontypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_ssovariables"
+  },
+  {
+    "Tables_in_glpi": "glpi_states"
+  },
+  {
+    "Tables_in_glpi": "glpi_stencils"
+  },
+  {
+    "Tables_in_glpi": "glpi_suppliers"
+  },
+  {
+    "Tables_in_glpi": "glpi_suppliers_tickets"
+  },
+  {
+    "Tables_in_glpi": "glpi_suppliertypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_taskcategories"
+  },
+  {
+    "Tables_in_glpi": "glpi_tasktemplates"
+  },
+  {
+    "Tables_in_glpi": "glpi_ticketcosts"
+  },
+  {
+    "Tables_in_glpi": "glpi_ticketrecurrents"
+  },
+  {
+    "Tables_in_glpi": "glpi_tickets"
+  },
+  {
+    "Tables_in_glpi": "glpi_tickets_contracts"
+  },
+  {
+    "Tables_in_glpi": "glpi_tickets_tickets"
+  },
+  {
+    "Tables_in_glpi": "glpi_tickets_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_ticketsatisfactions"
+  },
+  {
+    "Tables_in_glpi": "glpi_tickettasks"
+  },
+  {
+    "Tables_in_glpi": "glpi_tickettemplatehiddenfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_tickettemplatemandatoryfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_tickettemplatepredefinedfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_tickettemplatereadonlyfields"
+  },
+  {
+    "Tables_in_glpi": "glpi_tickettemplates"
+  },
+  {
+    "Tables_in_glpi": "glpi_ticketvalidations"
+  },
+  {
+    "Tables_in_glpi": "glpi_transfers"
+  },
+  {
+    "Tables_in_glpi": "glpi_unmanageds"
+  },
+  {
+    "Tables_in_glpi": "glpi_usbvendors"
+  },
+  {
+    "Tables_in_glpi": "glpi_usercategories"
+  },
+  {
+    "Tables_in_glpi": "glpi_useremails"
+  },
+  {
+    "Tables_in_glpi": "glpi_users"
+  },
+  {
+    "Tables_in_glpi": "glpi_usertitles"
+  },
+  {
+    "Tables_in_glpi": "glpi_validationsteps"
+  },
+  {
+    "Tables_in_glpi": "glpi_validatorsubstitutes"
+  },
+  {
+    "Tables_in_glpi": "glpi_virtualmachinestates"
+  },
+  {
+    "Tables_in_glpi": "glpi_virtualmachinesystems"
+  },
+  {
+    "Tables_in_glpi": "glpi_virtualmachinetypes"
+  },
+  {
+    "Tables_in_glpi": "glpi_vlans"
+  },
+  {
+    "Tables_in_glpi": "glpi_vobjects"
+  },
+  {
+    "Tables_in_glpi": "glpi_webhookcategories"
+  },
+  {
+    "Tables_in_glpi": "glpi_webhooks"
+  },
+  {
+    "Tables_in_glpi": "glpi_wifinetworks"
+  }
+]
