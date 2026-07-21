@@ -396,7 +396,7 @@ def upsert_asset(pg_conn, asset_data):
             asset_id = cur.fetchone()[0]
 
             # --- Step 2: Child Table Upsert ---
-            if asset_type == 'server':
+            if asset_type == 'ServerAsset':
                 os_version = asset_data.get('osVersion', '') or None
                 kernel_version = asset_data.get('kernelVersion', '') or None
                 software_raw = asset_data.get('software', '')
@@ -425,7 +425,7 @@ def upsert_asset(pg_conn, asset_data):
                     json.dumps(installed_software)
                 ))
 
-            elif asset_type == 'endpoint':
+            elif asset_type == 'EndpointAsset':
                 os_version = asset_data.get('osVersion', '') or None
                 software_raw = asset_data.get('software', '')
                 installed_software = {}
@@ -453,7 +453,7 @@ def upsert_asset(pg_conn, asset_data):
                     owner_email
                 ))
 
-            elif asset_type == 'network_device':
+            elif asset_type == 'NetworkDeviceAsset':
                 vendor = asset_data.get('vendor', '') or None
                 model = asset_data.get('model', '') or None
                 serial_number = asset_data.get('serial', '') or None
