@@ -17,36 +17,123 @@ import logging
 import os
 import re
 import shutil
+import stat
 import sys
 import time
 from datetime import datetime, date
 from pathlib import Path
 from logging.handlers import RotatingFileHandler
 import mysql.connector
+from dotenv import load_dotenv
 
 # ============================================================
-# CONFIGURATION
+# LOAD ENVIRONMENT VARIABLES
+# ============================================================
+
+load_dotenv()
+
+# ============================================================
+# CONFIGURATION (from .env file)
+
+def _parse_bool(val):
+    """Parse a string as a boolean. Accepts 'true'/'false', '1'/'0', 'yes'/'no' (case-insensitive)."""
+    if isinstance(val, bool):
+        return val
+    s = str(val).strip().lower()
+    return s in ('true', '1', 'yes', 'y')
 
 DB_CONFIG = {
-    'host': '172.17.0.1',
-    'port': 3306,
-    'user': 'glpi',
-    'password': 'glpi',
-    'database': 'glpi',
+    'host': os.getenv('DB_HOST', '172.17.0.1'),
+    'port': int(os.getenv('DB_PORT', '3306')),
+    'user': os.getenv('DB_USER', 'glpi'),
+    'password': os.getenv('DB_PASSWORD', 'glpi'),
+    'database': os.getenv('DB_NAME', 'glpi'),
 }
 
-# Asset names to exclude
-EXCLUDED_ASSETS = ['Yamaha-Kali-Laptop']
+# SSL connection parameters for remote databases
+ssl_ca = os.getenv('DB_SSL_CA')
+ssl_cert = os.getenv('DB_SSL_CERT')
+ssl_key = os.getenv('DB_SSL_KEY')
+ssl_verify_cert = os.getenv('DB_SSL_VERIFY_CERT')
+ssl_verify_identity = os.getenv('DB_SSL_VERIFY_IDENTITY')
+use_pure = os.getenv('DB_USE_PURE')
+
+if ssl_ca:
+    DB_CONFIG['ssl_ca'] = ssl_ca
+if ssl_cert:
+    DB_CONFIG['ssl_cert'] = ssl_cert
+if ssl_key:
+    DB_CONFIG['ssl_key'] = ssl_key
+if ssl_verify_cert is not None:
+    DB_CONFIG['ssl_verify_cert'] = _parse_bool(ssl_verify_cert)
+if ssl_verify_identity is not None:
+    DB_CONFIG['ssl_verify_identity'] = _parse_bool(ssl_verify_identity)
+if use_pure is not None:
+    DB_CONFIG['use_pure'] = _parse_bool(use_pure)
+
+# Asset names to exclude (comma-separated in .env)
+EXCLUDED_ASSETS_RAW = os.getenv('EXCLUDED_ASSETS', '')
+EXCLUDED_ASSETS = [a.strip() for a in EXCLUDED_ASSETS_RAW.split(',') if a.strip()]
 
 # Output settings
-OUTPUT_FILE = 'assets_inventory.csv'
-BACKUP_COUNT = 3
-LOG_FILE = 'generate_inventory.log'
-LOG_LEVEL = logging.INFO
+OUTPUT_FILE = os.getenv('OUTPUT_FILE', 'assets_inventory.csv')
+BACKUP_COUNT = int(os.getenv('BACKUP_COUNT', '3'))
+LOG_FILE = os.getenv('LOG_FILE', 'generate_inventory.log')
+LOG_LEVEL_NAME = os.getenv('LOG_LEVEL', 'INFO')
+LOG_LEVEL = getattr(logging, LOG_LEVEL_NAME.upper(), logging.INFO)
 
 # DB retry settings
-DB_RETRY_COUNT = 3
-DB_RETRY_DELAY = 2  # seconds
+DB_RETRY_COUNT = int(os.getenv('DB_RETRY_COUNT', '3'))
+DB_RETRY_DELAY = int(os.getenv('DB_RETRY_DELAY', '2'))  # seconds
+
+# ============================================================
+# OUTPUT DIRECTORY VALIDATION & SYMLINK RESOLUTION
+# ============================================================
+
+def resolve_and_validate_output(path_str):
+    """
+    Resolve symlinks in the given path string and validate the output directory.
+    
+    Returns the resolved absolute path string.
+    Raises:
+        FileNotFoundError  – if the parent directory does not exist
+        PermissionError    – if the parent directory is not writable
+        NotADirectoryError – if the parent is not a directory
+    """
+    # Resolve symlinks for the full path if it already exists;
+    # otherwise resolve the parent directory.
+    path = Path(path_str)
+
+    # Resolve the parent directory first (handles symlinks in directory components)
+    resolved_parent = path.parent.resolve()
+    if not resolved_parent.exists():
+        raise FileNotFoundError(
+            f"Output directory does not exist: {resolved_parent}"
+        )
+    if not resolved_parent.is_dir():
+        raise NotADirectoryError(
+            f"Output path parent is not a directory: {resolved_parent}"
+        )
+    if not os.access(str(resolved_parent), os.W_OK):
+        raise PermissionError(
+            f"Output directory is not writable: {resolved_parent}"
+        )
+
+    # If the file itself exists as a symlink, resolve it too
+    resolved_path = resolved_parent / path.name
+    if resolved_path.exists() or resolved_path.is_symlink():
+        resolved_path = resolved_path.resolve()
+
+    return str(resolved_path)
+
+
+def set_secure_permissions(filepath):
+    """Set file permissions to 0o600 (owner read/write only)."""
+    try:
+        os.chmod(filepath, stat.S_IRUSR | stat.S_IWUSR)
+    except OSError as e:
+        log.warning(f"Could not set permissions 0o600 on {filepath}: {e}")
+
 
 # ============================================================
 # CSV COLUMNS
@@ -74,8 +161,13 @@ def setup_logging():
     console.setFormatter(logging.Formatter('%(message)s'))
     logger.addHandler(console)
 
+    return logger
+
+
+def setup_file_logging(logger, log_file):
+    """Add a RotatingFileHandler to the logger with the resolved log file path."""
     try:
-        fh = RotatingFileHandler(LOG_FILE, maxBytes=10*1024*1024, backupCount=5)
+        fh = RotatingFileHandler(log_file, maxBytes=10*1024*1024, backupCount=5)
         fh.setLevel(logging.DEBUG)
         fh.setFormatter(logging.Formatter(
             '%(asctime)s [%(levelname)s] %(message)s',
@@ -83,9 +175,9 @@ def setup_logging():
         ))
         logger.addHandler(fh)
     except (IOError, PermissionError) as e:
-        logger.warning(f"Could not create log file {LOG_FILE}: {e}")
-
+        logger.warning(f"Could not create log file {log_file}: {e}")
     return logger
+
 
 log = setup_logging()
 
@@ -147,7 +239,10 @@ def atomic_csv_write(rows, columns, output_file, backup_count):
             writer = csv.DictWriter(f, fieldnames=columns)
             writer.writeheader()
             writer.writerows(rows)
-        
+
+        # Set secure permissions on the temp file before moving it
+        set_secure_permissions(temp_file)
+
         if os.path.exists(output_file):
             for i in range(backup_count - 1, 0, -1):
                 src = f"{output_file}.{i}"
@@ -273,7 +368,21 @@ def query_software(cursor, computer_id):
 # ============================================================
 
 def main():
+    global OUTPUT_FILE, LOG_FILE
+
     log.info("GLPI Inventory Exporter v3 [INTEGRITY MODE] - Starting")
+
+    # --- Resolve symlinks and validate output directory ---
+    OUTPUT_FILE = resolve_and_validate_output(OUTPUT_FILE)
+    LOG_FILE = resolve_and_validate_output(LOG_FILE)
+    log.info(f"Resolved output CSV path: {OUTPUT_FILE}")
+    log.info(f"Resolved log file path: {LOG_FILE}")
+
+    # Add file logging now that the log file path is resolved
+    setup_file_logging(log, LOG_FILE)
+    # Apply secure permissions to the log file (will be created on first log write)
+    set_secure_permissions(LOG_FILE)
+
     conn = connect_db()
     cursor = conn.cursor(dictionary=True)
     rows = []
@@ -374,6 +483,8 @@ def main():
     # --- Phase 3: Write CSV ---
     if rows:
         atomic_csv_write(rows, CSV_COLUMNS, OUTPUT_FILE, BACKUP_COUNT)
+        # Ensure final CSV file also has secure permissions
+        set_secure_permissions(OUTPUT_FILE)
         log.info(f"Successfully exported {len(rows)} raw assets without CPE strings.")
     
     cursor.close()
