@@ -7,9 +7,90 @@
 
 ## Overview
 
-This script is designed to collect inventory information from GLPI, including installed software for each computer.
+This script collects inventory information from GLPI (computers + network equipment) and exports them to:
+- A **CSV file** (`assets_inventory.csv`)
+- A **PostgreSQL (Neon) database** (optional)
 
-For every computer in the inventory, the script executes a separate database query to retrieve the list of installed software.
+The codebase has been refactored into a modular `glpi_inventory` package for better organization and maintainability.
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+```bash
+pip install mysql-connector-python psycopg2-binary python-dotenv
+```
+
+### Setup
+
+1. Copy the example environment file and edit it with your database credentials:
+   ```bash
+   cp .env.exemple .env
+   ```
+
+2. Edit `.env` to configure:
+   - **GLPI (MySQL)** connection: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`
+   - **Neon (PostgreSQL)** connection: `PG_DSN` (required for `postgresql` or `both` mode)
+   - **Output mode**: `OUTPUT_MODE=csv` (default), `postgresql`, or `both`
+   - **Output file**: `OUTPUT_FILE=assets_inventory.csv`
+
+### Run
+
+You can run the exporter using either command:
+
+```bash
+# Method 1 — Original entry point (backward compatible)
+python generate_inventory.py
+
+# Method 2 — Package module (recommended)
+python -m glpi_inventory
+```
+
+---
+
+## Configuration (`.env`)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DB_HOST` | `172.17.0.1` | GLPI MySQL host |
+| `DB_PORT` | `3306` | GLPI MySQL port |
+| `DB_USER` | `glpi` | GLPI MySQL user |
+| `DB_PASSWORD` | `glpi` | GLPI MySQL password |
+| `DB_NAME` | `glpi` | GLPI MySQL database |
+| `PG_DSN` | — | Neon PostgreSQL DSN (e.g. `postgresql://user:pass@host/db`) |
+| `OUTPUT_MODE` | `csv` | Output mode: `csv`, `postgresql`, or `both` |
+| `OUTPUT_FILE` | `assets_inventory.csv` | CSV output file path |
+| `BACKUP_COUNT` | `3` | Number of CSV backups to keep |
+| `LOG_FILE` | `generate_inventory.log` | Log file path |
+| `LOG_LEVEL` | `INFO` | Log level: `DEBUG`, `INFO`, `WARNING`, `ERROR` |
+| `DB_RETRY_COUNT` | `3` | Number of connection retries |
+| `DB_RETRY_DELAY` | `2` | Seconds between retries |
+| `EXCLUDED_ASSETS` | — | Comma-separated hostnames to skip |
+
+---
+
+## Project Structure
+
+```
+├── generate_inventory.py          # Thin entry point (backward compatible)
+├── glpi_inventory/                # Modular package
+│   ├── __init__.py                # Package marker + version
+│   ├── __main__.py                # `python -m glpi_inventory` entry
+│   ├── config.py                  # Configuration loading + typed Config dataclass
+│   ├── logger.py                  # Console + file logging setup
+│   ├── db.py                      # MySQL (GLPI) + PostgreSQL (Neon) connections
+│   ├── queries.py                 # SQL queries + retry-aware executor
+│   ├── mapping.py                 # Status/criticality mapping + asset classification
+│   ├── parsers.py                 # Raw value preservation + sysDescr OS parser
+│   ├── output_csv.py              # Atomic CSV write with rotation
+│   ├── output_pg.py               # PostgreSQL upsert logic
+│   └── main.py                    # Orchestrator (main function)
+├── .env                           # Your configuration
+├── .env.exemple                   # Example configuration
+└── README.md                      # This file
+```
 
 ---
 
