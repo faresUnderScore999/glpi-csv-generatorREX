@@ -1,5 +1,5 @@
 .env
 *.log
-*.csv
+*.csv*
 # LibreOffice lock files
 .~lock.*

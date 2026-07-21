@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 GLPI Assets Inventory Exporter v3 - Pure Data Integrity Edition
-Generates an assets_inventory.csv file from GLPI MariaDB database.
+Generates an assets_inventory.csv file from GLPI MariaDB database and/or
+upserts assets into a PostgreSQL (Neon) database.
 Maintains 100% integrity of raw database entries without transformation.
 
 CSV Columns (28):
@@ -24,6 +25,8 @@ from datetime import datetime, date
 from pathlib import Path
 from logging.handlers import RotatingFileHandler
 import mysql.connector
+import psycopg2
+import psycopg2.extras
 from dotenv import load_dotenv
 
 # ============================================================
@@ -42,6 +45,7 @@ def _parse_bool(val):
     s = str(val).strip().lower()
     return s in ('true', '1', 'yes', 'y')
 
+# --- GLPI (MySQL) connection ---
 DB_CONFIG = {
     'host': os.getenv('DB_HOST', '172.17.0.1'),
     'port': int(os.getenv('DB_PORT', '3306')),
@@ -50,7 +54,7 @@ DB_CONFIG = {
     'database': os.getenv('DB_NAME', 'glpi'),
 }
 
-# SSL connection parameters for remote databases
+# SSL connection parameters for remote GLPI databases
 ssl_ca = os.getenv('DB_SSL_CA')
 ssl_cert = os.getenv('DB_SSL_CERT')
 ssl_key = os.getenv('DB_SSL_KEY')
@@ -71,11 +75,19 @@ if ssl_verify_identity is not None:
 if use_pure is not None:
     DB_CONFIG['use_pure'] = _parse_bool(use_pure)
 
+# --- Neon (PostgreSQL) connection ---
+PG_DSN = os.getenv('PG_DSN', '')
+PG_CONNECT_TIMEOUT = int(os.getenv('PG_CONNECT_TIMEOUT', '10'))
+
+# --- Output mode ---
+# 'csv' | 'postgresql' | 'both'
+OUTPUT_MODE = os.getenv('OUTPUT_MODE', 'csv').strip().lower()
+
 # Asset names to exclude (comma-separated in .env)
 EXCLUDED_ASSETS_RAW = os.getenv('EXCLUDED_ASSETS', '')
 EXCLUDED_ASSETS = [a.strip() for a in EXCLUDED_ASSETS_RAW.split(',') if a.strip()]
 
-# Output settings
+# Output settings (used when OUTPUT_MODE is 'csv' or 'both')
 OUTPUT_FILE = os.getenv('OUTPUT_FILE', 'assets_inventory.csv')
 BACKUP_COUNT = int(os.getenv('BACKUP_COUNT', '3'))
 LOG_FILE = os.getenv('LOG_FILE', 'generate_inventory.log')
@@ -89,22 +101,36 @@ DB_RETRY_DELAY = int(os.getenv('DB_RETRY_DELAY', '2'))  # seconds
 # ============================================================
 # OUTPUT DIRECTORY VALIDATION & SYMLINK RESOLUTION
 # ============================================================
+def map_criticality(raw_criticality):
+    """Map GLPI criticality (if any) to allowed PG values; default to MEDIUM."""
+    # If you don't have a criticality field, always return 'MEDIUM'
+    return 'MEDIUM'
 
+def map_status(raw_state):
+    """Map GLPI state name to allowed PostgreSQL status."""
+    mapping = {
+        'In use': 'ACTIVE',
+        'Under repair': 'INACTIVE',
+        'In stock': 'INACTIVE',
+        'Retired': 'RETIRED',
+        # add others as needed
+    }
+    # If raw_state is None or empty, default to ACTIVE
+    if not raw_state:
+        return 'ACTIVE'
+    return mapping.get(raw_state, 'ACTIVE')
 def resolve_and_validate_output(path_str):
     """
     Resolve symlinks in the given path string and validate the output directory.
-    
+
     Returns the resolved absolute path string.
     Raises:
         FileNotFoundError  – if the parent directory does not exist
         PermissionError    – if the parent directory is not writable
         NotADirectoryError – if the parent is not a directory
     """
-    # Resolve symlinks for the full path if it already exists;
-    # otherwise resolve the parent directory.
     path = Path(path_str)
 
-    # Resolve the parent directory first (handles symlinks in directory components)
     resolved_parent = path.parent.resolve()
     if not resolved_parent.exists():
         raise FileNotFoundError(
@@ -119,7 +145,6 @@ def resolve_and_validate_output(path_str):
             f"Output directory is not writable: {resolved_parent}"
         )
 
-    # If the file itself exists as a symlink, resolve it too
     resolved_path = resolved_parent / path.name
     if resolved_path.exists() or resolved_path.is_symlink():
         resolved_path = resolved_path.resolve()
@@ -196,16 +221,29 @@ def connect_db():
     for attempt in range(1, DB_RETRY_COUNT + 1):
         try:
             conn = mysql.connector.connect(**DB_CONFIG)
-            log.info(f"Connected to database {DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}")
+            log.info(f"Connected to GLPI database {DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}")
             return conn
         except mysql.connector.Error as e:
-            log.error(f"DB connection attempt {attempt}/{DB_RETRY_COUNT} failed: {e}")
+            log.error(f"GLPI DB connection attempt {attempt}/{DB_RETRY_COUNT} failed: {e}")
             if attempt < DB_RETRY_COUNT:
                 log.info(f"Retrying in {DB_RETRY_DELAY}s...")
                 time.sleep(DB_RETRY_DELAY)
             else:
-                log.critical("All database connection attempts failed. Exiting.")
+                log.critical("All GLPI database connection attempts failed. Exiting.")
                 sys.exit(1)
+
+def connect_pg():
+    """Connect to the Neon (PostgreSQL) database using the DSN."""
+    if not PG_DSN:
+        log.error("PG_DSN is not set. Cannot connect to PostgreSQL database.")
+        return None
+    try:
+        conn = psycopg2.connect(PG_DSN, connect_timeout=PG_CONNECT_TIMEOUT)
+        log.info("Connected to Neon (PostgreSQL) database.")
+        return conn
+    except psycopg2.Error as e:
+        log.error(f"Neon DB connection failed: {e}")
+        return None
 
 def extract_os_from_sysdescr(sysdescr):
     """Fallback parser for Network Equipment OS extraction."""
@@ -240,7 +278,6 @@ def atomic_csv_write(rows, columns, output_file, backup_count):
             writer.writeheader()
             writer.writerows(rows)
 
-        # Set secure permissions on the temp file before moving it
         set_secure_permissions(temp_file)
 
         if os.path.exists(output_file):
@@ -260,6 +297,208 @@ def atomic_csv_write(rows, columns, output_file, backup_count):
             except OSError:
                 pass
         raise
+
+# ============================================================
+# NEON (POSTGRESQL) UPSERT FUNCTIONS
+# ============================================================
+
+def classify_asset_type(glpi_type, device_type, os_name):
+    """
+    Classify a GLPI asset into one of: 'server', 'endpoint', 'network_device'.
+
+    - glpi_type: 'Computer' or 'NetworkEquipment' from GLPI
+    - device_type: the GLPI computer/network type name (e.g. 'Server', 'Desktop', 'Laptop')
+    - os_name: the operating system name
+    """
+    if glpi_type == 'NetworkEquipment':
+        return 'network_device'
+
+    # For computers, use the device_type name to decide
+    dt_lower = (device_type or '').lower()
+    if 'server' in dt_lower:
+        return 'server'
+    # If no explicit type, check OS
+    os_lower = (os_name or '').lower()
+    if any(kw in os_lower for kw in ('server', 'centos', 'rhel', 'debian', 'ubuntu server')):
+        return 'server'
+    # Default to endpoint for workstations, laptops, desktops, etc.
+    return 'endpoint'
+
+
+def upsert_asset(pg_conn, asset_data):
+    """
+    Upsert a single asset into the Neon database using ip_address as the unique key.
+    """
+    ip_address = asset_data.get('ip', '') or None
+    hostname = asset_data.get('hostname', '') or None
+
+    # Skip records without an IP address if IP is your primary identifier
+    if not ip_address:
+        log.warning(f"Skipping asset '{hostname}': Missing required IP address.")
+        return False
+
+    glpi_type = asset_data.get('glpi_type', '')
+    device_type = asset_data.get('type', '')
+    os_name = asset_data.get('os', '')
+    asset_type = classify_asset_type(glpi_type, device_type, os_name)
+
+    try:
+        with pg_conn.cursor() as cur:
+            subnet_mask = asset_data.get('subnet_mask', '') or None
+            mac_address = asset_data.get('mac', '') or None
+            location = asset_data.get('location', '') or None
+            criticality = asset_data.get('criticality', '') or None
+            owner_email = asset_data.get('owner', '') or None
+            source = asset_data.get('source', '') or None
+            status = asset_data.get('status', '') or None
+
+            # --- Step 1: Base Table Upsert on ip_address ---
+            # Exclude asset_id from the INSERT list so Postgres triggers DEFAULT gen_random_uuid()
+            cur.execute("""
+                INSERT INTO assets (
+                    ip_address,
+                    subnet_mask,
+                    mac_address,
+                    hostname,
+                    asset_type,
+                    location,
+                    criticality,
+                    owner_email,
+                    source,
+                    status
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (ip_address) DO UPDATE SET
+                    subnet_mask = EXCLUDED.subnet_mask,
+                    mac_address = EXCLUDED.mac_address,
+                    hostname = EXCLUDED.hostname,
+                    asset_type = EXCLUDED.asset_type,
+                    location = EXCLUDED.location,
+                    criticality = EXCLUDED.criticality,
+                    owner_email = EXCLUDED.owner_email,
+                    source = EXCLUDED.source,
+                    status = EXCLUDED.status,
+                    updated_at = NOW()
+                RETURNING asset_id;
+            """, (
+                ip_address,
+                subnet_mask,
+                mac_address,
+                hostname,
+                asset_type,
+                location,
+                criticality,
+                owner_email,
+                source,
+                status
+            ))
+            
+            asset_id = cur.fetchone()[0]
+
+            # --- Step 2: Child Table Upsert ---
+            if asset_type == 'server':
+                os_version = asset_data.get('osVersion', '') or None
+                kernel_version = asset_data.get('kernelVersion', '') or None
+                software_raw = asset_data.get('software', '')
+                installed_software = {}
+                if software_raw:
+                    try:
+                        installed_software = json.loads(software_raw)
+                    except (json.JSONDecodeError, TypeError):
+                        installed_software = {}
+
+                cur.execute("""
+                    INSERT INTO server_assets (
+                        asset_id, os_name, os_version, kernel_version, installed_software
+                    )
+                    VALUES (%s, %s, %s, %s, %s::jsonb)
+                    ON CONFLICT (asset_id) DO UPDATE SET
+                        os_name = EXCLUDED.os_name,
+                        os_version = EXCLUDED.os_version,
+                        kernel_version = EXCLUDED.kernel_version,
+                        installed_software = EXCLUDED.installed_software;
+                """, (
+                    asset_id,
+                    os_name or None,
+                    os_version,
+                    kernel_version,
+                    json.dumps(installed_software)
+                ))
+
+            elif asset_type == 'endpoint':
+                os_version = asset_data.get('osVersion', '') or None
+                software_raw = asset_data.get('software', '')
+                installed_software = {}
+                if software_raw:
+                    try:
+                        installed_software = json.loads(software_raw)
+                    except (json.JSONDecodeError, TypeError):
+                        installed_software = {}
+
+                cur.execute("""
+                    INSERT INTO endpoint_assets (
+                        asset_id, os_name, os_version, installed_software, assigned_user
+                    )
+                    VALUES (%s, %s, %s, %s::jsonb, %s)
+                    ON CONFLICT (asset_id) DO UPDATE SET
+                        os_name = EXCLUDED.os_name,
+                        os_version = EXCLUDED.os_version,
+                        installed_software = EXCLUDED.installed_software,
+                        assigned_user = EXCLUDED.assigned_user;
+                """, (
+                    asset_id,
+                    os_name or None,
+                    os_version,
+                    json.dumps(installed_software),
+                    owner_email
+                ))
+
+            elif asset_type == 'network_device':
+                vendor = asset_data.get('vendor', '') or None
+                model = asset_data.get('model', '') or None
+                serial_number = asset_data.get('serial', '') or None
+                product_number = asset_data.get('product_number', '') or None
+                firmware_version = asset_data.get('firmware', '') or None
+                network_zone = asset_data.get('network_zone', '') or None
+
+                cur.execute("""
+                    INSERT INTO network_device_assets (
+                        asset_id, vendor, model, serial_number, product_number,
+                        firmware_version, network_zone
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (asset_id) DO UPDATE SET
+                        vendor = EXCLUDED.vendor,
+                        model = EXCLUDED.model,
+                        serial_number = EXCLUDED.serial_number,
+                        product_number = EXCLUDED.product_number,
+                        firmware_version = EXCLUDED.firmware_version,
+                        network_zone = EXCLUDED.network_zone;
+                """, (
+                    asset_id, vendor, model, serial_number,
+                    product_number, firmware_version, network_zone
+                ))
+
+        pg_conn.commit()
+        log.info(f"Upserted asset for IP: {ip_address} (asset_id={asset_id})")
+        return True
+
+    except psycopg2.Error as e:
+        log.error(f"PostgreSQL upsert failed for IP {ip_address}: {e}")
+        pg_conn.rollback()
+        return False
+    
+def upsert_all_assets(pg_conn, rows):
+    """Upsert all assets into the Neon database. Returns (success_count, fail_count)."""
+    success = 0
+    fail = 0
+    for asset_data in rows:
+        if upsert_asset(pg_conn, asset_data):
+            success += 1
+        else:
+            fail += 1
+    return success, fail
+
 
 # ============================================================
 # DATABASE QUERIES
@@ -371,17 +610,18 @@ def main():
     global OUTPUT_FILE, LOG_FILE
 
     log.info("GLPI Inventory Exporter v3 [INTEGRITY MODE] - Starting")
+    log.info(f"Output mode: {OUTPUT_MODE}")
 
-    # --- Resolve symlinks and validate output directory ---
-    OUTPUT_FILE = resolve_and_validate_output(OUTPUT_FILE)
-    LOG_FILE = resolve_and_validate_output(LOG_FILE)
-    log.info(f"Resolved output CSV path: {OUTPUT_FILE}")
-    log.info(f"Resolved log file path: {LOG_FILE}")
+    # --- Resolve symlinks and validate output directory (for CSV mode) ---
+    if OUTPUT_MODE in ('csv', 'both'):
+        OUTPUT_FILE = resolve_and_validate_output(OUTPUT_FILE)
+        LOG_FILE = resolve_and_validate_output(LOG_FILE)
+        log.info(f"Resolved output CSV path: {OUTPUT_FILE}")
+        log.info(f"Resolved log file path: {LOG_FILE}")
 
-    # Add file logging now that the log file path is resolved
-    setup_file_logging(log, LOG_FILE)
-    # Apply secure permissions to the log file (will be created on first log write)
-    set_secure_permissions(LOG_FILE)
+        # Add file logging now that the log file path is resolved
+        setup_file_logging(log, LOG_FILE)
+        set_secure_permissions(LOG_FILE)
 
     conn = connect_db()
     cursor = conn.cursor(dictionary=True)
@@ -409,10 +649,10 @@ def main():
                 'subnet_mask': preserve_raw(row, 'subnet_mask'),
                 'mac': preserve_raw(row, 'mac_address'),
                 'location': preserve_raw(row, 'location'),
-                'criticality': preserve_raw(row, 'device_type'),
+                'criticality': map_criticality(preserve_raw(row, 'device_type')),
                 'owner': preserve_raw(row, 'owner_name'),
                 'source': 'AGENT',
-                'status': preserve_raw(row, 'state'),
+                'status': map_status(preserve_raw(row, 'state')),
                 'os': preserve_raw(row, 'os_name'),
                 'osVersion': preserve_raw(row, 'os_version'),
                 'kernelVersion': preserve_raw(row, 'kernel_version'),
@@ -455,10 +695,10 @@ def main():
                 'subnet_mask': preserve_raw(row, 'subnet_mask'),
                 'mac': preserve_raw(row, 'mac_address'),
                 'location': preserve_raw(row, 'location'),
-                'criticality': preserve_raw(row, 'device_type'),
+                'criticality': map_criticality(preserve_raw(row, 'device_type')),
                 'owner': '',
                 'source': 'MANUAL',
-                'status': preserve_raw(row, 'state'),
+                'status': map_status(preserve_raw(row, 'state')),
                 'os': net_os_name if net_os_name else sysdescr,
                 'osVersion': net_os_version,
                 'kernelVersion': net_kernel,
@@ -475,18 +715,35 @@ def main():
                 'warranty_end': preserve_raw(row, 'warranty_months'),
                 'last_updated': preserve_raw(row, 'last_updated'),
                 'ticket_count': preserve_raw(row, 'ticket_count'),
-                
+
             })
         except Exception as e:
             log.error(f"Error processing network row: {e}")
 
-    # --- Phase 3: Write CSV ---
-    if rows:
+    if not rows:
+        log.warning("No assets found to export.")
+        cursor.close()
+        conn.close()
+        return
+
+    log.info(f"Total assets collected: {len(rows)}")
+
+    # --- Phase 3: Write CSV (if mode is csv or both) ---
+    if OUTPUT_MODE in ('csv', 'both'):
         atomic_csv_write(rows, CSV_COLUMNS, OUTPUT_FILE, BACKUP_COUNT)
-        # Ensure final CSV file also has secure permissions
         set_secure_permissions(OUTPUT_FILE)
-        log.info(f"Successfully exported {len(rows)} raw assets without CPE strings.")
-    
+        log.info(f"CSV exported: {len(rows)} rows to {OUTPUT_FILE}")
+
+    # --- Phase 4: Upsert to Neon PostgreSQL (if mode is postgresql or both) ---
+    if OUTPUT_MODE in ('postgresql', 'both'):
+        pg_conn = connect_pg()
+        if pg_conn:
+            success, fail = upsert_all_assets(pg_conn, rows)
+            log.info(f"Neon upsert complete: {success} succeeded, {fail} failed")
+            pg_conn.close()
+        else:
+            log.error("Skipping PostgreSQL upsert due to connection failure.")
+
     cursor.close()
     conn.close()
 
