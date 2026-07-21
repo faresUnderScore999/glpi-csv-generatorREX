@@ -311,18 +311,18 @@ def classify_asset_type(glpi_type, device_type, os_name):
     - os_name: the operating system name
     """
     if glpi_type == 'NetworkEquipment':
-        return 'network_device'
+        return 'NetworkDeviceAsset'
 
     # For computers, use the device_type name to decide
     dt_lower = (device_type or '').lower()
     if 'server' in dt_lower:
-        return 'server'
+        return 'ServerAsset'
     # If no explicit type, check OS
     os_lower = (os_name or '').lower()
     if any(kw in os_lower for kw in ('server', 'centos', 'rhel', 'debian', 'ubuntu server')):
-        return 'server'
+        return 'ServerAsset'
     # Default to endpoint for workstations, laptops, desktops, etc.
-    return 'endpoint'
+    return 'EndpointAsset'
 
 
 def upsert_asset(pg_conn, asset_data):
