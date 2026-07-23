@@ -125,6 +125,7 @@ def main():
                 'warranty_end': preserve_raw(row, 'warranty_months'),
                 'last_updated': preserve_raw(row, 'last_updated'),
                 'ticket_count': preserve_raw(row, 'ticket_count'),
+                'organization': config.organization,
             })
         except Exception as e:
             log.error(f"Error processing computer row: {e}")
@@ -171,6 +172,7 @@ def main():
                 'warranty_end': preserve_raw(row, 'warranty_months'),
                 'last_updated': preserve_raw(row, 'last_updated'),
                 'ticket_count': preserve_raw(row, 'ticket_count'),
+                'organization': config.organization,
             })
         except Exception as e:
             log.error(f"Error processing network row: {e}")

@@ -16,7 +16,7 @@ log = logging.getLogger('glpi_inventory')
 
 def upsert_asset(pg_conn, asset_data):
     """
-    Upsert a single asset into the Neon database using ip_address as the unique key.
+    Upsert a single asset into the Neon database using (oip_id, ip_address) as the composite unique key.
     """
     ip_address = asset_data.get('ip', '') or None
     hostname = asset_data.get('hostname', '') or None
@@ -39,8 +39,9 @@ def upsert_asset(pg_conn, asset_data):
             owner_email = asset_data.get('owner', '') or None
             source = asset_data.get('source', '') or None
             status = asset_data.get('status', '') or None
+            organization = asset_data.get('organization', '') or None
 
-            # --- Step 1: Base Table Upsert on ip_address ---
+            # --- Step 1: Base Table Upsert on (oip_id, ip_address) ---
             cur.execute("""
                 INSERT INTO assets (
                     ip_address,
@@ -52,10 +53,11 @@ def upsert_asset(pg_conn, asset_data):
                     criticality,
                     owner_email,
                     source,
-                    status
+                    status,
+                    oip_id
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                ON CONFLICT (ip_address) DO UPDATE SET
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (oip_id, ip_address) DO UPDATE SET
                     subnet_mask = EXCLUDED.subnet_mask,
                     mac_address = EXCLUDED.mac_address,
                     hostname = EXCLUDED.hostname,
@@ -65,6 +67,7 @@ def upsert_asset(pg_conn, asset_data):
                     owner_email = EXCLUDED.owner_email,
                     source = EXCLUDED.source,
                     status = EXCLUDED.status,
+                    oip_id = EXCLUDED.oip_id,
                     updated_at = NOW()
                 RETURNING asset_id;
             """, (
@@ -77,7 +80,8 @@ def upsert_asset(pg_conn, asset_data):
                 criticality,
                 owner_email,
                 source,
-                status
+                status,
+                organization
             ))
 
             asset_id = cur.fetchone()[0]

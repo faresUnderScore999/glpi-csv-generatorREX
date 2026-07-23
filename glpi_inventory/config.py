@@ -34,7 +34,7 @@ CSV_COLUMNS = [
     'software',
     'vendor', 'model', 'product_number', 'serial', 'firmware',
     'network_zone', 'glpi_id', 'glpi_type', 'purchase_date', 'warranty_end',
-    'last_updated', 'ticket_count',
+    'last_updated', 'ticket_count', 'organization',
 ]
 
 
@@ -77,6 +77,9 @@ class Config:
     backup_count: int = field(default_factory=lambda: int(os.getenv('BACKUP_COUNT', '3')))
     log_file: str = field(default_factory=lambda: os.getenv('LOG_FILE', 'generate_inventory.log'))
     log_level_name: str = field(default_factory=lambda: os.getenv('LOG_LEVEL', 'INFO'))
+
+    # Organization
+    organization: str = field(default_factory=lambda: os.getenv('ORGANIZATION', ''))
 
     # DB retry settings
     db_retry_count: int = field(default_factory=lambda: int(os.getenv('DB_RETRY_COUNT', '3')))
